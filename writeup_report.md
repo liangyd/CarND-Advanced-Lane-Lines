@@ -108,11 +108,13 @@ Once the lane lines have been found in the previous image, the next search can s
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I calculated the curvature through the `curvature` function in my code in `lane_detection.ipynb`. The curvature calculation is based on the following equation:
+The curvature and vehicle position was calculated in the real world space, which requires a conversion from pixel to meter. In general, the lane is about 30 meters long and 3.7 meters wide on an image. Thus, 720 pixels in y direction represents 30 meter and 700 pixels in x direction represents 3.7 meters. 
+
+After the conversion, I calculated the curvature through the `curvature` function in my code in `lane_detection.ipynb`. The curvature calculation is based on the following equation:
 
 ![alt text][image7]
 
-I calculated the position of the vehicle through the `offset` function by comparing the center of the image and the center of the two lanes. 
+I calculated the position of the vehicle through the `offset` function by comparing the center of the image and the center of the two lanes, assuming that the camera is mounted at the center of the vehicle. 
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
