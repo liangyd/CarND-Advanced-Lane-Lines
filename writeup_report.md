@@ -25,7 +25,7 @@ The goals of this project are the following:
 [image6]: ./output_images/perspective_transform/lanefinding.jpg
 [image7]: ./output_images/equation.jpg
 [image8]: ./output_images/final_output/result_test3.jpg
-[video1]: ./
+
 ---
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
