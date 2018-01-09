@@ -144,7 +144,7 @@ When I wrote the pipeline, I also constructed a class `Line()` to temporarily st
 
 The first problem that I encountered was that the lane detection was affected by the shadows, road surface color, brightness, etc. I compared different channels in different color spaces to find out the best way to represent both lane lines. 
 
-Another problem I had was that the detected lane lines was off from the true positions. Thus, I introduced the sanity check to find out if the detected lane lines are valid. 
+Another problem I had was that the detected lane lines was off from the true positions. Thus, I introduced the sanity check to find out if the detected lane lines are valid. I used the `subclip` function to debug the problematic frames instead of processing all the video frames.
 
 The pipeline performs well on the basic video. However, in the challenging video, this pipeline does not perform well. The pipeline may fail in the following conditions:
 
@@ -152,6 +152,11 @@ The pipeline performs well on the basic video. However, in the challenging video
 * When the lane lines are covered with snow, the algorithm cannot tell the difference between white lane lines and white snow.
 * When the camera type or the camera position changes, it needs to recalculate the calibration matrix and the perspective tranform matrix. Otherwise, it will fail.
 
-I have also considered some approaches to make the pipeline more robust. Using different curving fitting method may lead to a more accurate 
+I have also considered some approaches to make the pipeline more robust:
+
+* Add a region of interest in the raw image and remove the outliers 
+* Use other curve fitting methods instead of the 2-order polynomial fitting
+* Use other edge detection method such as the Laplace operator
+* Refine the thresholds in the color space 
 
 
