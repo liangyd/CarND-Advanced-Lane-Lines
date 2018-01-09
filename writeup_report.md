@@ -59,7 +59,8 @@ I applied the distortion correction to a test image:
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image.The details were written in the `binary_image` function of the "lane_detection.ipynb". I covered the image from RGB to HLS. I applied the Sobel operator on the L channel to calculate the derivative in the x direction. I also applied the color selection to get the pixels with a large value on S channel. 
+I used a combination of color and gradient thresholds to generate a binary image.The details were written in the `binary_image` function of the "lane_detection.ipynb". 
+I tried different color space to find the best way to detect the white and yellow lanes. I found out that the B channel in LAB color space and the L channel in HLS space have the best performance in lane detection. I did not apply any gradient threshold to the image.
 Here's an example of my output for this step:
 ![alt text][image3]
 
@@ -106,6 +107,10 @@ The lane finding method was included in the `lanefinder` function in the 16th co
 
 Once the lane lines have been found in the previous image, the next search can start with the old lane line with a +/- margin around its line center. 
 
+After that, I also added a sanity check which ensures that the two lane lines are almost parallel. I calculated the lane distance at the top and bottom of the image. If these two lane distances are not the same, then the lane detection result is invalid. If the polyfit coefficients changes rapidly, the lane detection result is also invalid.
+
+If the detected lane lines fail in the sanity check, the lane finding algorithm will be reset and the lane finding will start with the histogram calculation again.
+
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
 The curvature and vehicle position was calculated in the real world space, which requires a conversion from pixel to meter. In general, the lane is about 30 meters long and 3.7 meters wide on an image. Thus, 720 pixels in y direction represents 30 meter and 700 pixels in x direction represents 3.7 meters. 
@@ -137,4 +142,16 @@ When I wrote the pipeline, I also constructed a class `Line()` to temporarily st
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-The pipeline was likely to fail when there are shadows or the road color changes. I used the smoothing function and the look-ahead filter to increase the robustness. Once the lane lines is detected in the previous frame, the next search will start from the previous lane detection result. It ensures a continuity in the detected lanes. 
+The first problem that I encountered was that the lane detection was affected by the shadows, road surface color, brightness, etc. I compared different channels in different color spaces to find out the best way to represent both lane lines. 
+
+Another problem I had was that the detected lane lines was off from the true positions. Thus, I introduced the sanity check to find out if the detected lane lines are valid. 
+
+The pipeline performs well on the basic video. However, in the challenging video, this pipeline does not perform well. The pipeline may fail in the following conditions:
+
+* When the car goes through a tunnel or under a bridge, the ambient light is very dark which makes the lane lines hard to be detected. 
+* When the lane lines are covered with snow, the algorithm cannot tell the difference between white lane lines and white snow.
+* When the camera type or the camera position changes, it needs to recalculate the calibration matrix and the perspective tranform matrix. Otherwise, it will fail.
+
+I have also considered some approaches to make the pipeline more robust. Using different curving fitting method may lead to a more accurate 
+
+
